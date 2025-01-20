@@ -66,15 +66,12 @@ volumes:
     name: ${DOCKER_DB_VOL}
   4cat_data:
     name: ${DOCKER_DATA_VOL}
-  4cat_config:
-    name: ${DOCKER_CONFIG_VOL}
-  4cat_logs:
-    name: ${DOCKER_LOGS_VOL}
-
-volumes:
-  4cat_data:
     driver: local
     driver_opts:
       type: 'none'
       o: 'bind'
       device: '/researchdrive/Testfolder - Max Paulus (Projectfolder)'
+  4cat_config:
+    name: ${DOCKER_CONFIG_VOL}
+  4cat_logs:
+    name: ${DOCKER_LOGS_VOL}
