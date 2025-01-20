@@ -70,7 +70,7 @@ volumes:
     driver_opts:
       type: 'none'
       o: 'bind'
-      device: '/researchdrive/Testfolder - Max Paulus (Projectfolder)'
+      device: "/researchdrive/Testfolder - Max Paulus (Projectfolder)"
   4cat_config:
     name: ${DOCKER_CONFIG_VOL}
   4cat_logs:
