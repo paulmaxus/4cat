@@ -70,3 +70,11 @@ volumes:
     name: ${DOCKER_CONFIG_VOL}
   4cat_logs:
     name: ${DOCKER_LOGS_VOL}
+
+volumes:
+  4cat_data:
+    driver: local
+    driver_opts:
+      type: 'none'
+      o: 'bind'
+      device: '/researchdrive/Testfolder - Max Paulus (Projectfolder)'
