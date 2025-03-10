@@ -68,6 +68,11 @@ volumes:
     name: ${DOCKER_DB_VOL}
   4cat_data:
     name: ${DOCKER_DATA_VOL}
+    driver: local
+    driver_opts:
+            type: 'none'
+            o: 'bind'
+            device: '/data/4cat_storage'
   4cat_config:
     name: ${DOCKER_CONFIG_VOL}
   4cat_logs:
