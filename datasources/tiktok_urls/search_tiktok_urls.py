@@ -537,7 +537,7 @@ class TikTokScraper:
                     "success": False,
                     "url": url,
                     "error": None,
-                    "from_dataset": self.processor.source_dataset.key,
+                    "from_dataset": self.processor.dataset.key,
                     "post_ids": [video_id],
                 }
                 if not request.done():
