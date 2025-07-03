@@ -6,7 +6,6 @@ import asyncio
 from backend.lib.search import Search
 from common.lib.helpers import UserInput
 from datasources.tiktok_urls.search_tiktok_urls import SearchTikTokByID, TikTokScraper
-from common.config_manager import config
 
 class SearchTikTokVideo(Search):
     """
