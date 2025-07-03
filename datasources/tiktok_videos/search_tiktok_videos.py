@@ -1,10 +1,10 @@
 """
+Download TikTok videos from URLs
 """
 import asyncio
 
 from backend.lib.search import Search
 from common.lib.helpers import UserInput
-from datasources.tiktok.search_tiktok import SearchTikTok as SearchTikTokByImport
 from datasources.tiktok_urls.search_tiktok_urls import SearchTikTokByID, TikTokScraper
 from common.config_manager import config
 
@@ -16,9 +16,10 @@ class SearchTikTokVideo(Search):
     category = "Search"  # category
     title = "Search TikTok Videos by post URL"  # title displayed in UI
     description = "Retrieve videos for TikTok post URLs."  # description displayed in UI
-    extension = "ndjson"  # extension of result file, used internally and in UI
+    extension = "zip"  # extension of result file, used internally and in UI
     is_local = False  # Whether this datasource is locally scraped
     is_static = False  # Whether this datasource is still updated
+    max_workers=4
 
     # not available as a processor for existing datasets
     accepts = [None]
@@ -41,16 +42,8 @@ class SearchTikTokVideo(Search):
     options = {
         "intro": {
             "type": UserInput.OPTION_INFO,
-            "help": "This data source can retrieve video from TikTok posts based on a list of URLs for those "
+            "help": "This data source can retrieve videos from TikTok posts based on a list of URLs for those "
                     "posts.\n\nEnter a list of TikTok post URLs."
-        },
-        "amount": {
-            "type": UserInput.OPTION_TEXT,
-            "help": "No. of videos (max 1000)",
-            "default": 100,
-            "min": 0,
-            "max": 1000,
-            "tooltip": "Due to simultaneous downloads, you may end up with a few extra videos."
         },
         "urls": {
             "type": UserInput.OPTION_TEXT_LARGE,
@@ -62,7 +55,7 @@ class SearchTikTokVideo(Search):
 
     def get_items(self, query):
         """
-        Retrieve metadata for TikTok URLs
+        Retrieve videos from TikTok URLs
 
         :param dict query:  Search query parameters
         """
@@ -71,13 +64,17 @@ class SearchTikTokVideo(Search):
         
         tiktok_scraper = TikTokScraper(processor=self, config=self.config)
         loop = asyncio.new_event_loop()
-        return loop.run_until_complete(tiktok_scraper.download_videos(query["ids"].split(","), results_path, query["amount"]))
+        results = loop.run_until_complete(
+            tiktok_scraper.download_videos(query["ids"].split(","), results_path, query["amount"])
+        )
+        return results_path
 
     @staticmethod
     def validate_query(query, request, user):
         params = SearchTikTokByID.validate_query(query, request, user)
+        urls = params["urls"].split(",")
         # get ids from urls
-        params["ids"] = ",".join([url.split("/")[-1] for url in params["urls"].split(",")])
-        # add amount
-        params["amount"] = query.get("amount", 0)
+        params["ids"] = ",".join([url.split("/")[-1] for url in urls])
+        # amount = total amount
+        params["amount"] = len(urls)
         return params
